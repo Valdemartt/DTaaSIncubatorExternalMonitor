@@ -1,0 +1,13 @@
+#!/bin/bash
+# install packages from Alberto
+cd orbit2 && dpkg -i *.deb; apt install -fy
+cd ..
+
+pip install omniorb-py
+
+# create .orbitrc file with correct contents
+echo -e "ORBIIOPUSock=1\\nORBIIOPIPv4=1\\nORBIIOPIPv6=0" > $HOME/.orbitrc
+
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r ./incubator/incubator/requirements.txt -r requirements.txt
