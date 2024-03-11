@@ -19,7 +19,6 @@ def startNuRV(ior):
         f.seek(0)
         f.writelines(lines)
         f.close()
-
     # Start NuRV monitor server    
     nurvProcess = subprocess.Popen("exec /workspace/examples/tools/NuRV/NuRV_orbit -source commands safe-operation.smv", shell=True, cwd=os.getcwd(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     while True:
@@ -106,31 +105,31 @@ def runScenario(event):
     print("Running scenario with initial state: lid closed and energy saver on", flush=True)
     os.system("cd incubator/incubator; python -m cli.trigger_energy_saver")
     os.system("cd incubator/incubator; python -m cli.mess_with_lid_mock 1")
-    for i in range(1500): # wait 15 seconds
+    for i in range(1200): # wait 2 minutes
         if event.is_set():
             return
-        time.sleep(0.01)
+        time.sleep(0.1)
     
     print("Opening lid...", flush=True)
     os.system("cd incubator/incubator; python -m cli.mess_with_lid_mock 100")
-    for i in range(1500): # wait 15 seconds
+    for i in range(300): # wait 30 seconds
         if event.is_set():
             return
-        time.sleep(0.01)
+        time.sleep(0.1)
     
     print("Disabling energy saver...", flush=True)
     os.system("cd incubator/incubator; python -m cli.trigger_energy_saver --disable")
-    for i in range(1500):
+    for i in range(300):
         if event.is_set():
             return
-        time.sleep(0.01)
+        time.sleep(0.1)
     
     print("Putting lid back on...", flush=True)
     os.system(("cd incubator/incubator; python -m cli.mess_with_lid_mock 1"))
-    for i in range(2500): # wait for the anomaly detection to determine that the lid is back on
+    for i in range(300): # wait for the anomaly detection to determine that the lid is back on
         if event.is_set():
             return
-        time.sleep(0.01)
+        time.sleep(0.1)
     event.set()
 
 if __name__ == "__main__":
